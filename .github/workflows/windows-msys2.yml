@@ -1,0 +1,36 @@
+name: windows-msys2
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - msystem: MINGW64
+            arch: x86_64
+          - msystem: MINGW32
+            arch: i686
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          install: >-
+            mingw-w64-${{ matrix.arch }}-cmake
+            mingw-w64-${{ matrix.arch }}-ninja
+            mingw-w64-${{ matrix.arch }}-clang
+            mingw-w64-${{ matrix.arch }}-compiler-rt
+      - name: Run ninja
+        shell: msys2 {0}
+        run: |
+          mkdir build
+          cd build
+          rm -rf CmakeCache.txt && cmake -GNinja -DOVBASE_PATH=3rd/ovbase -DCMAKE_C_COMPILER=clang -DCMAKE_C_STANDARD=11 -DCMAKE_C_STANDARD_REQUIRED=ON -DCMAKE_C_EXTENSIONS=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && ninja && ctest --output-junit testlog.xml

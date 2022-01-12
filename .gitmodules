@@ -1,0 +1,3 @@
+[submodule "3rd/ovbase"]
+	path = 3rd/ovbase
+	url = https://github.com/oov/ovbase
