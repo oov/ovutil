@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
 project(ovutil C)
-enable_language(C)
 enable_testing()
 
 file(GLOB sources "${PROJECT_SOURCE_DIR}/src/*.c" "${PROJECT_SOURCE_DIR}/include/*.h")
