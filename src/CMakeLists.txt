@@ -38,6 +38,7 @@ foreach(target ${targets})
     $<$<CONFIG:Release>:-O2>
   )
   target_link_options(${target} PRIVATE
+    -fuse-ld=lld
     -Wl,--gc-sections
     # -Wl,--print-gc-sections
   )
