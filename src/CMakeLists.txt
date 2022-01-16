@@ -36,6 +36,7 @@ foreach(target ${targets})
     -fdata-sections
     $<$<CONFIG:Debug>:-O0>
     $<$<CONFIG:Release>:-O2>
+    -flto
   )
   target_link_options(${target} PRIVATE
     -fuse-ld=lld
