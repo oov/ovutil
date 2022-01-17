@@ -1,21 +1,5 @@
 #include "ovutil/win32.h"
 
-NODISCARD static error get_file_attributes(struct wstr const *const path, DWORD *const attr) {
-  if (!path) {
-    return errg(err_invalid_arugment);
-  }
-  if (!attr) {
-    return errg(err_null_pointer);
-  }
-
-  DWORD const r = GetFileAttributesW(path->ptr);
-  if (r == INVALID_FILE_ATTRIBUTES) {
-    return errhr(HRESULT_FROM_WIN32(GetLastError()));
-  }
-  *attr = r;
-  return eok();
-}
-
 NODISCARD static error get_file_information(struct wstr const *const path, BY_HANDLE_FILE_INFORMATION *const bhfi) {
   if (!path) {
     return errg(err_invalid_arugment);
@@ -46,7 +30,7 @@ NODISCARD static error get_file_information(struct wstr const *const path, BY_HA
   return eok();
 }
 
-error is_same_file(struct wstr const *const file1, struct wstr const *const file2, bool *const same) {
+NODISCARD error is_same_file(struct wstr const *const file1, struct wstr const *const file2, bool *const same) {
   if (!file1 || !file2) {
     return errg(err_invalid_arugment);
   }
@@ -70,30 +54,6 @@ error is_same_file(struct wstr const *const file1, struct wstr const *const file
   return eok();
 }
 
-error is_same_dir(struct wstr const *const dir1, struct wstr const *const dir2, bool *const same) {
+NODISCARD error is_same_dir(struct wstr const *const dir1, struct wstr const *const dir2, bool *const same) {
   return is_same_file(dir1, dir2, same);
-}
-
-error file_exists(struct wstr const *const path, bool *const exists) {
-  if (!path) {
-    return errg(err_invalid_arugment);
-  }
-  if (!exists) {
-    return errg(err_null_pointer);
-  }
-
-  DWORD attr = 0;
-  error err = get_file_attributes(path, &attr);
-  if (efailed(err)) {
-    if (eis_hr(err, HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) ||
-        eis_hr(err, HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND))) {
-      efree(&err);
-      *exists = false;
-      return eok();
-    }
-    err = ethru(err);
-    return err;
-  }
-  *exists = true;
-  return eok();
 }

@@ -10,6 +10,7 @@ HINSTANCE get_hinstance(void);
 
 NODISCARD error disable_family_windows(HWND const exclude, HWND **const disabled_windows);
 void restore_disabled_family_windows(HWND *const disabled_windows);
+
 int message_box(HWND const window, wchar_t const *const msg, wchar_t const *const title, UINT const flags);
 
 NODISCARD error set_client_size(HWND const window, LONG const width, LONG const height);
@@ -35,6 +36,13 @@ NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
                                    size_t const datalen,
                                    struct wstr *const dest);
 NODISCARD error delete_file(struct wstr const *const path);
+NODISCARD error write_file(HANDLE const h, void *const p, size_t const bytes, size_t *const written);
+NODISCARD error path_relative_path_to(struct wstr const *const path_from,
+                                             DWORD const attr_from,
+                                             struct wstr const *const path_to,
+                                             DWORD const attr_to,
+                                             struct wstr *const dest);
+NODISCARD error get_file_attributes(struct wstr const *const path, DWORD *const attr);
 
 NODISCARD error from_cp(UINT const code_page, struct str const *const src, struct wstr *const dest);
 NODISCARD error from_mbcs(struct str const *const src, struct wstr *const dest);

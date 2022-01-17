@@ -1,6 +1,6 @@
 #include "ovutil/win32.h"
 
-error from_cp(UINT const code_page, struct str const *const src, struct wstr *const dest) {
+NODISCARD error from_cp(UINT const code_page, struct str const *const src, struct wstr *const dest) {
   if (!src) {
     return errg(err_invalid_arugment);
   }
@@ -51,7 +51,7 @@ cleanup:
   return err;
 }
 
-error to_cp(UINT const code_page, struct wstr const *const src, struct str *const dest) {
+NODISCARD error to_cp(UINT const code_page, struct wstr const *const src, struct str *const dest) {
   if (!src) {
     return errg(err_invalid_arugment);
   }
@@ -102,10 +102,10 @@ cleanup:
   return err;
 }
 
-error from_mbcs(struct str const *const src, struct wstr *const dest) { return from_cp(CP_ACP, src, dest); }
+NODISCARD error from_mbcs(struct str const *const src, struct wstr *const dest) { return from_cp(CP_ACP, src, dest); }
 
-error from_utf8(struct str const *const src, struct wstr *const dest) { return from_cp(CP_UTF8, src, dest); }
+NODISCARD error from_utf8(struct str const *const src, struct wstr *const dest) { return from_cp(CP_UTF8, src, dest); }
 
-error to_mbcs(struct wstr const *const src, struct str *const dest) { return to_cp(CP_ACP, src, dest); }
+NODISCARD error to_mbcs(struct wstr const *const src, struct str *const dest) { return to_cp(CP_ACP, src, dest); }
 
-error to_utf8(struct wstr const *const src, struct str *const dest) { return to_cp(CP_UTF8, src, dest); }
+NODISCARD error to_utf8(struct wstr const *const src, struct str *const dest) { return to_cp(CP_UTF8, src, dest); }

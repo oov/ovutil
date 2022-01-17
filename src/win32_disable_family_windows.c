@@ -38,7 +38,7 @@ static WINBOOL CALLBACK disable_family_windows_callback(HWND const window, LPARA
   return TRUE;
 }
 
-error disable_family_windows(HWND const exclude, HWND **const disabled_windows) {
+NODISCARD error disable_family_windows(HWND const exclude, HWND **const disabled_windows) {
   if (!disabled_windows) {
     return errg(err_null_pointer);
   }

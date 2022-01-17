@@ -1,6 +1,6 @@
 #include "ovutil/win32.h"
 
-error get_long_path_name(struct wstr const *const src, struct wstr *const dest) {
+NODISCARD error get_long_path_name(struct wstr const *const src, struct wstr *const dest) {
   if (!src) {
     return errg(err_invalid_arugment);
   }

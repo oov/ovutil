@@ -1,6 +1,6 @@
 #include "ovutil/win32.h"
 
-error set_client_size(HWND const window, LONG const width, LONG const height) {
+NODISCARD error set_client_size(HWND const window, LONG const width, LONG const height) {
   RECT wr = {0};
   if (!GetWindowRect(window, &wr)) {
     return errhr(HRESULT_FROM_WIN32(GetLastError()));
