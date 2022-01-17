@@ -1,38 +1,38 @@
 add_library(ovutil STATIC
-  str_atoi64.c
-  str_atou64.c
-  str_exclude_trailing_path_delimiter.c
-  str_extract_file_extension.c
-  str_extract_file_name.c
-  str_include_trailing_path_delimiter.c
-  str_sanitize.c
-  str_utoa64.c
-  $<$<BOOL:${WIN32}>:win32_create_unique_file.c>
-  $<$<BOOL:${WIN32}>:win32_create_unique_temp_file.c>
-  $<$<BOOL:${WIN32}>:win32_delete_file.c>
-  $<$<BOOL:${WIN32}>:win32_disable_family_windows.c>
-  $<$<BOOL:${WIN32}>:win32_encoding.c>
-  $<$<BOOL:${WIN32}>:win32_file_contains.c>
-  $<$<BOOL:${WIN32}>:win32_file_exists.c>
-  $<$<BOOL:${WIN32}>:win32_get_file_attributes.c>
-  $<$<BOOL:${WIN32}>:win32_get_long_path_name.c>
-  $<$<BOOL:${WIN32}>:win32_get_module_file_name.c>
-  $<$<BOOL:${WIN32}>:win32_get_temp_dir.c>
-  $<$<BOOL:${WIN32}>:win32_get_window_text.c>
-  $<$<BOOL:${WIN32}>:win32_hinstance.c>
-  $<$<BOOL:${WIN32}>:win32_is_same_file.c>
-  $<$<BOOL:${WIN32}>:win32_message_box.c>
-  $<$<BOOL:${WIN32}>:win32_path_relative_path_to.c>
-  $<$<BOOL:${WIN32}>:win32_set_client_size.c>
-  $<$<BOOL:${WIN32}>:win32_write_file.c>
+  str/atoi64.c
+  str/atou64.c
+  str/exclude_trailing_path_delimiter.c
+  str/extract_file_extension.c
+  str/extract_file_name.c
+  str/include_trailing_path_delimiter.c
+  str/sanitize.c
+  str/utoa64.c
+  $<$<BOOL:${WIN32}>:win32/create_unique_file.c>
+  $<$<BOOL:${WIN32}>:win32/create_unique_temp_file.c>
+  $<$<BOOL:${WIN32}>:win32/delete_file.c>
+  $<$<BOOL:${WIN32}>:win32/disable_family_windows.c>
+  $<$<BOOL:${WIN32}>:win32/encoding.c>
+  $<$<BOOL:${WIN32}>:win32/file_contains.c>
+  $<$<BOOL:${WIN32}>:win32/file_exists.c>
+  $<$<BOOL:${WIN32}>:win32/get_file_attributes.c>
+  $<$<BOOL:${WIN32}>:win32/get_long_path_name.c>
+  $<$<BOOL:${WIN32}>:win32/get_module_file_name.c>
+  $<$<BOOL:${WIN32}>:win32/get_temp_dir.c>
+  $<$<BOOL:${WIN32}>:win32/get_window_text.c>
+  $<$<BOOL:${WIN32}>:win32/hinstance.c>
+  $<$<BOOL:${WIN32}>:win32/is_same_file.c>
+  $<$<BOOL:${WIN32}>:win32/message_box.c>
+  $<$<BOOL:${WIN32}>:win32/path_relative_path_to.c>
+  $<$<BOOL:${WIN32}>:win32/set_client_size.c>
+  $<$<BOOL:${WIN32}>:win32/write_file.c>
 )
 list(APPEND targets ovutil)
 
-add_executable(test_ovutil_str str_test.c)
+add_executable(test_ovutil_str str/test.c)
 list(APPEND targets test_ovutil_str)
 
 if(WIN32)
-  add_executable(test_ovutil_win32 win32_test.c)
+  add_executable(test_ovutil_win32 win32/test.c)
   list(APPEND targets test_ovutil_win32)
 endif()
 
