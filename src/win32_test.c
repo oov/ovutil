@@ -1,6 +1,5 @@
-#include "win32.c"
-
 #include "ovtest.h"
+#include "ovutil/win32.h"
 
 #ifdef __GNUC__
 #  if __has_warning("-Wpadded")

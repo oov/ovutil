@@ -1,6 +1,5 @@
-#include "str.c"
-
 #include "ovtest.h"
+#include "ovutil/str.h"
 
 #ifdef __GNUC__
 #  if __has_warning("-Wpadded")
