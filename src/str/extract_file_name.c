@@ -1,8 +1,6 @@
 #include "ovutil/str.h"
 
-#define max(a, b) (a > b ? a : b)
-
-NODISCARD error extract_file_name(struct wstr const *const src, size_t *const pos) {
+NODISCARD error extract_file_name(struct NATIVE_STR const *const src, size_t *const pos) {
   if (!src) {
     return errg(err_invalid_arugment);
   }
@@ -13,8 +11,10 @@ NODISCARD error extract_file_name(struct wstr const *const src, size_t *const po
     *pos = 0;
     return eok();
   }
-  wchar_t const *const bslash = wcsrchr(src->ptr, L'\\');
-  wchar_t const *const slash = wcsrchr(src->ptr, L'/');
+#ifdef _WIN32
+#  define max(a, b) (a > b ? a : b)
+  wchar_t const *const bslash = wcsrchr(src->ptr, NSTR('\\'));
+  wchar_t const *const slash = wcsrchr(src->ptr, NSTR('/'));
   if (bslash == NULL && slash == NULL) {
     *pos = 0;
     return eok();
@@ -23,7 +23,14 @@ NODISCARD error extract_file_name(struct wstr const *const src, size_t *const po
     *pos = (size_t)(max(bslash, slash) + 1 - src->ptr);
     return eok();
   }
-
   *pos = (size_t)((bslash != NULL ? bslash : slash) + 1 - src->ptr);
+#else
+  char const *const slash = strrchr(src->ptr, NSTR('/'));
+  if (slash == NULL) {
+    *pos = 0;
+    return eok();
+  }
+  *pos = (size_t)(slash + 1 - src->ptr);
+#endif
   return eok();
 }

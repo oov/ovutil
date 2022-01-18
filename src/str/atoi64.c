@@ -1,6 +1,6 @@
 #include "ovutil/str.h"
 
-NODISCARD error atoi64(struct wstr const *const s, int64_t *const dest) {
+NODISCARD error atoi64(struct NATIVE_STR const *const s, int64_t *const dest) {
   if (!s) {
     return errg(err_invalid_arugment);
   }
@@ -9,20 +9,20 @@ NODISCARD error atoi64(struct wstr const *const s, int64_t *const dest) {
   }
 
   uint64_t r = 0, pr = 0;
-  wchar_t *ptr = s->ptr;
+  NATIVE_CHAR *ptr = s->ptr;
   size_t len = s->len;
   int64_t sign = 1;
-  if (len && (*ptr == L'+' || *ptr == L'-')) {
-    sign = *ptr == L'-' ? -1 : 1;
+  if (len && (*ptr == NSTR('+') || *ptr == NSTR('-'))) {
+    sign = *ptr == NSTR('-') ? -1 : 1;
     ++ptr;
     --len;
   }
   for (size_t i = 0; i < len; ++i) {
-    if (i >= 19 || '0' > ptr[i] || ptr[i] > '9') {
+    if (i >= 19 || NSTR('0') > ptr[i] || ptr[i] > NSTR('9')) {
       return errg(err_fail);
     }
     pr = r;
-    r = r * 10 + (uint64_t)(ptr[i] - '0');
+    r = r * 10 + (uint64_t)(ptr[i] - NSTR('0'));
     if (r < pr) {
       return errg(err_fail);
     }

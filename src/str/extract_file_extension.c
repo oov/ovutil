@@ -1,6 +1,12 @@
 #include "ovutil/str.h"
 
-NODISCARD error extract_file_extension(struct wstr const *const src, size_t *const pos) {
+#ifdef _WIN32
+#  define NATIVE_RCHR wcsrchr
+#else
+#  define NATIVE_RCHR strrchr
+#endif
+
+NODISCARD error extract_file_extension(struct NATIVE_STR const *const src, size_t *const pos) {
   if (!src) {
     return errg(err_invalid_arugment);
   }
@@ -13,7 +19,7 @@ NODISCARD error extract_file_extension(struct wstr const *const src, size_t *con
     err = ethru(err);
     return err;
   }
-  wchar_t const *const dot = wcsrchr(src->ptr + fnpos, L'.');
+  NATIVE_CHAR const *const dot = NATIVE_RCHR(src->ptr + fnpos, NSTR('.'));
   if (dot == NULL) {
     *pos = src->len;
     return eok();
