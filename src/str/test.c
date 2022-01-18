@@ -15,17 +15,17 @@ static void test_atoi64(void) {
   } test_data[] = {
       {
           .input = L"0",
-          .output = 0,
+          .output = INT64_C(0),
           .code = 0,
       },
       {
           .input = L"1",
-          .output = 1,
+          .output = INT64_C(1),
           .code = 0,
       },
       {
           .input = L"-1",
-          .output = -1,
+          .output = INT64_C(-1),
           .code = 0,
       },
       {
@@ -75,7 +75,7 @@ static void test_atou64(void) {
   } test_data[] = {
       {
           .input = L"0",
-          .output = 0,
+          .output = UINT64_C(0),
           .code = 0,
       },
       {
@@ -112,13 +112,55 @@ static void test_atou64(void) {
   }
 }
 
+static void test_itoa64(void) {
+  static const struct test_data {
+    int64_t input;
+    wchar_t const *output;
+  } test_data[] = {
+      {
+          .input = INT64_C(0),
+          .output = L"0",
+      },
+      {
+          .input = INT64_C(1),
+          .output = L"1",
+      },
+      {
+          .input = INT64_MAX,
+          .output = L"9223372036854775807",
+      },
+      {
+          .input = INT64_C(-1),
+          .output = L"-1",
+      },
+      {
+          .input = INT64_MIN,
+          .output = L"-9223372036854775808",
+      },
+  };
+
+  struct wstr tmp = {0};
+  size_t n = sizeof(test_data) / sizeof(test_data[0]);
+  for (size_t i = 0; i < n; ++i) {
+    struct test_data const *const td = test_data + i;
+    TEST_CASE_("test #%zu \"%ls\"", i, td->output);
+    if (TEST_SUCCEEDED_F(itoa64(td->input, &tmp))) {
+      TEST_CHECK(tmp.len > 0);
+      TEST_CHECK(wcscmp(tmp.ptr, td->output) == 0);
+      TEST_MSG("expected %ls", td->output);
+      TEST_MSG("got %ls", tmp.ptr);
+    }
+  }
+  ereport(sfree(&tmp));
+}
+
 static void test_utoa64(void) {
   static const struct test_data {
     uint64_t input;
     wchar_t const *output;
   } test_data[] = {
       {
-          .input = 0ULL,
+          .input = UINT64_C(0),
           .output = L"0",
       },
       {
@@ -371,6 +413,7 @@ static void test_extract_file_extension(void) {
 TEST_LIST = {
     {"test_atoi64", test_atoi64},
     {"test_atou64", test_atou64},
+    {"test_itoa64", test_itoa64},
     {"test_utoa64", test_utoa64},
     {"test_include_trailing_path_delimiter", test_include_trailing_path_delimiter},
     {"test_exclude_trailing_path_delimiter", test_exclude_trailing_path_delimiter},

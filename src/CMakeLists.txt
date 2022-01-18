@@ -5,6 +5,7 @@ add_library(ovutil STATIC
   str/extract_file_extension.c
   str/extract_file_name.c
   str/include_trailing_path_delimiter.c
+  str/itoa64.c
   str/sanitize.c
   str/utoa64.c
   $<$<BOOL:${WIN32}>:win32/create_unique_file.c>
