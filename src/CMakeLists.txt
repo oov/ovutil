@@ -1,13 +1,9 @@
 add_library(ovutil STATIC
-  str/atoi64.c
-  str/atou64.c
   str/exclude_trailing_path_delimiter.c
   str/extract_file_extension.c
   str/extract_file_name.c
   str/include_trailing_path_delimiter.c
-  str/itoa64.c
   str/sanitize.c
-  str/utoa64.c
   $<$<BOOL:${WIN32}>:win32/create_unique_file.c>
   $<$<BOOL:${WIN32}>:win32/create_unique_temp_file.c>
   $<$<BOOL:${WIN32}>:win32/delete_file.c>
