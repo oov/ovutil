@@ -95,7 +95,7 @@ static void test_create_unique_temp_file(void) {
 
 static void test_from_utf8(void) {
   static struct str const src = str_unmanaged("\xE3\x81\x93\xE3\x82\x93\xE3\x81\xAB\xE3\x81\xA1\xE3\x81\xAF");
-  static wchar_t const *const ws = L"こんにちは";
+  static wchar_t const ws[] = L"こんにちは";
   size_t const len = wcslen(ws);
   struct wstr dest = {0};
   if (TEST_SUCCEEDED_F(from_utf8(&src, &dest))) {
@@ -111,7 +111,7 @@ static void test_from_utf8(void) {
 
 static void test_to_utf8(void) {
   static struct wstr const src = wstr_unmanaged(L"こんにちは");
-  static char const *const utf8 = "\xE3\x81\x93\xE3\x82\x93\xE3\x81\xAB\xE3\x81\xA1\xE3\x81\xAF";
+  static char const utf8[] = "\xE3\x81\x93\xE3\x82\x93\xE3\x81\xAB\xE3\x81\xA1\xE3\x81\xAF";
   size_t const len = strlen(utf8);
   struct str dest = {0};
   if (TEST_SUCCEEDED_F(to_utf8(&src, &dest))) {
