@@ -1,3 +1,4 @@
+#include "ovnum.h"
 #include "ovutil/win32.h"
 
 NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
@@ -21,8 +22,9 @@ NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
   }
 
   size_t const base_fullpath_len = tmp.len;
-  uint32_t hash = ovbase_splitmix32_next(GetTickCount() + GetCurrentProcessId() + GetCurrentThreadId());
-  wchar_t numstr[16] = {0};
+  uint32_t hash = ov_splitmix32_next(GetTickCount() + GetCurrentProcessId() + GetCurrentThreadId());
+  wchar_t numbuf[32] = {0};
+  wchar_t *numstr = numbuf;
   for (int i = 0; i < 9; ++i) {
     err = scatm(&tmp, numstr, ext);
     if (efailed(err)) {
@@ -35,8 +37,9 @@ NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
       HRESULT hr = HRESULT_FROM_WIN32(GetLastError());
       if (hr == HRESULT_FROM_WIN32(ERROR_FILE_EXISTS)) {
         tmp.ptr[base_fullpath_len] = L'\0';
-        wsprintfW(numstr, L".%d", ovbase_splitmix32(hash) & 0xffffff);
-        hash = ovbase_splitmix32_next(hash);
+        numstr = ov_utoa((uint64_t)(ov_splitmix32(hash) & 0xffffff), numbuf);
+        *--numstr = L'.';
+        hash = ov_splitmix32_next(hash);
         continue;
       }
       err = errhr(hr);
