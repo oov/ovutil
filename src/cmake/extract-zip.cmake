@@ -9,6 +9,6 @@ file(REMOVE_RECURSE "${local_dir}/${dir}")
 file(MAKE_DIRECTORY "${local_dir}/${dir}")
 
 execute_process(
-  COMMAND CMAKE -E tar xzvf ${ZIP_PATH}
+  COMMAND ${CMAKE_COMMAND} -E tar xzvf ${ZIP_PATH}
   WORKING_DIRECTORY "${local_dir}/${dir}"
 )
