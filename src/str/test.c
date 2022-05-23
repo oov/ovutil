@@ -1,12 +1,6 @@
 #include "ovtest.h"
 #include "ovutil/str.h"
 
-#ifdef __GNUC__
-#  if __has_warning("-Wpadded")
-#    pragma GCC diagnostic ignored "-Wpadded"
-#  endif
-#endif // __GNUC__
-
 #ifdef _WIN32
 #  define NSTR_PH "ls"
 #  define NATIVE_CMP wcscmp

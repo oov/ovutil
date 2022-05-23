@@ -1,12 +1,6 @@
 #include "ovtest.h"
 #include "ovutil/win32.h"
 
-#ifdef __GNUC__
-#  if __has_warning("-Wpadded")
-#    pragma GCC diagnostic ignored "-Wpadded"
-#  endif
-#endif // __GNUC__
-
 static void test_file_contains(void) {
   static const struct test_data {
     wchar_t const *dir;

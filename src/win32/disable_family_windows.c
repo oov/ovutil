@@ -1,11 +1,5 @@
 #include "ovutil/win32.h"
 
-#ifdef __GNUC__
-#  pragma GCC diagnostic push
-#  if __has_warning("-Wpadded")
-#    pragma GCC diagnostic ignored "-Wpadded"
-#  endif
-#endif
 struct disable_family_windows_data {
   HWND *ptr;
   size_t len;
@@ -14,9 +8,6 @@ struct disable_family_windows_data {
   DWORD pid;
   HWND exclude;
 };
-#ifdef __GNUC__
-#  pragma GCC diagnostic pop
-#endif
 
 static WINBOOL CALLBACK disable_family_windows_callback(HWND const window, LPARAM const lparam) {
   struct disable_family_windows_data *const d = (void *)lparam;
