@@ -1,9 +1,14 @@
 add_library(ovutil STATIC
+  parallel/get_number_of_logical_cores.c
+  parallel/get_number_of_physical_cores.c
+  parallel/ovparallel.c
+
   str/exclude_trailing_path_delimiter.c
   str/extract_file_extension.c
   str/extract_file_name.c
   str/include_trailing_path_delimiter.c
   str/sanitize.c
+
   $<$<BOOL:${WIN32}>:win32/create_unique_file.c>
   $<$<BOOL:${WIN32}>:win32/create_unique_temp_file.c>
   $<$<BOOL:${WIN32}>:win32/delete_file.c>
@@ -24,6 +29,9 @@ add_library(ovutil STATIC
   $<$<BOOL:${WIN32}>:win32/write_file.c>
 )
 list(APPEND targets ovutil)
+
+add_executable(test_ovutil_parallel parallel/test.c)
+list(APPEND targets test_ovutil_parallel)
 
 add_executable(test_ovutil_str str/test.c)
 list(APPEND targets test_ovutil_str)
