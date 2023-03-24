@@ -233,3 +233,9 @@ mo_ngettext(struct mo const *const mp, char const *const id, char const *const i
   }
   return n != 1 ? id_plural : id;
 }
+
+static struct mo *g_mp = NULL;
+
+void mo_set_default(struct mo *const mp) { g_mp = mp; }
+
+struct mo *mo_get_default(void) { return g_mp; }
