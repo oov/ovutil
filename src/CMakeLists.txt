@@ -1,5 +1,6 @@
 add_library(ovutil STATIC
   mo/mo.c
+  $<$<BOOL:${WIN32}>:mo/win32.c>
 
   parallel/get_number_of_logical_cores.c
   parallel/get_number_of_physical_cores.c
@@ -32,7 +33,7 @@ add_library(ovutil STATIC
 )
 list(APPEND targets ovutil)
 
-add_executable(test_ovutil_mo mo/test.c)
+add_executable(test_ovutil_mo mo/test.c mo/test_win32/test.rc)
 list(APPEND targets test_ovutil_mo)
 
 add_executable(test_ovutil_parallel parallel/test.c)
