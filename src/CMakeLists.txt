@@ -1,4 +1,6 @@
 add_library(ovutil STATIC
+  mo/mo.c
+
   parallel/get_number_of_logical_cores.c
   parallel/get_number_of_physical_cores.c
   parallel/ovparallel.c
@@ -30,6 +32,9 @@ add_library(ovutil STATIC
 )
 list(APPEND targets ovutil)
 
+add_executable(test_ovutil_mo mo/test.c)
+list(APPEND targets test_ovutil_mo)
+
 add_executable(test_ovutil_parallel parallel/test.c)
 list(APPEND targets test_ovutil_parallel)
 
@@ -44,6 +49,9 @@ endif()
 foreach(target ${targets})
   if(target MATCHES "^test_")
     add_test(NAME ${target} COMMAND ${target})
+    target_compile_definitions(${target} PRIVATE
+      SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+    )
   endif()
   target_include_directories(${target} PUBLIC
     "${PROJECT_SOURCE_DIR}/include"
