@@ -15,8 +15,5 @@ struct mo  * mo_get_default(void);
 
 #ifdef _WIN32
 NODISCARD error mo_parse_from_resource(struct mo **const mpp, uint16_t const lang_id);
-wchar_t const *mo_gettext_win32(struct mo const *const mp, struct wstr *const buf, wchar_t const *const id);
-wchar_t const *mo_pgettext_win32(struct mo const *const mp, struct wstr *const buf, wchar_t const *const ctxt, wchar_t const *const id);
-wchar_t const *mo_ngettext_win32(struct mo const *const mp, struct wstr *const buf, wchar_t const *const id, wchar_t const *const id_plural, unsigned long int const n);
-
+int mo_sprintf(wchar_t *const buf, size_t const buflen, wchar_t const *const reference, char const*const format, ...);
 #endif

@@ -47,14 +47,7 @@ static void test_mo(void) {
   TEST_CHECK(msg == mp->msg + 3);
   msg = find(mp, "an apple\0apples");
   TEST_CHECK(msg == mp->msg + 4);
-  mo_free(&mp);
-}
 
-static void test_public_api(void) {
-  struct mo *mp = open_mo();
-  if (!mp) {
-    return;
-  }
   char const *got = NULL, *expected = NULL;
   TEST_CHECK(strcmp(expected = "Hello world2", got = mo_gettext(mp, "Hello world")) == 0);
   TEST_MSG("expected %s got %s", expected, got);
@@ -104,42 +97,26 @@ static void test_mo_win32(void) {
   }
 
   TEST_CHECK(strcmp(mo_gettext(mp, "Hello world"), "ハローワールド") == 0);
-  TEST_CHECK(wcscmp(mo_gettext_win32(mp, &ws, L"Hello world"), L"ハローワールド") == 0);
   TEST_CHECK(strcmp(mo_gettext(mp, "Hello_world"), "Hello_world") == 0);
-  TEST_CHECK(wcscmp(mo_gettext_win32(mp, &ws, L"Hello_world"), L"Hello_world") == 0);
 
   TEST_CHECK(strcmp(mo_pgettext(mp, "Menu|File", "Open"), "ファイルを開く") == 0);
-  TEST_CHECK(wcscmp(mo_pgettext_win32(mp, &ws, L"Menu|File", L"Open"), L"ファイルを開く") == 0);
   TEST_CHECK(strcmp(mo_pgettext(mp, "Menu|XXX", "Open"), "Open") == 0);
-  TEST_CHECK(wcscmp(mo_pgettext_win32(mp, &ws, L"Menu|XXX", L"Open"), L"Open") == 0);
 
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples", 0), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples", 0), L"%d個のりんご") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples", 1), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples", 1), L"%d個のりんご") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples", 2), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples", 2), L"%d個のりんご") == 0);
 
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples3", 0), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples3", 0), L"%d個のりんご") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples3", 1), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples3", 1), L"%d個のりんご") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple", "%d apples3", 2), "%d個のりんご") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple", L"%d apples3", 2), L"%d個のりんご") == 0);
 
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples", 0), "%d apples") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples", 0), L"%d apples") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples", 1), "an apple3") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples", 1), L"an apple3") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples", 2), "%d apples") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples", 2), L"%d apples") == 0);
 
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples3", 0), "%d apples3") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples3", 0), L"%d apples3") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples3", 1), "an apple3") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples3", 1), L"an apple3") == 0);
   TEST_CHECK(strcmp(mo_ngettext(mp, "an apple3", "%d apples3", 2), "%d apples3") == 0);
-  TEST_CHECK(wcscmp(mo_ngettext_win32(mp, &ws, L"an apple3", L"%d apples3", 2), L"%d apples3") == 0);
 
   mo_free(&mp);
   ereport(sfree(&ws));
@@ -148,7 +125,6 @@ static void test_mo_win32(void) {
 
 TEST_LIST = {
     {"test_mo", test_mo},
-    {"test_public_api", test_public_api},
 #ifdef _WIN32
     {"test_mo_win32", test_mo_win32},
 #endif
