@@ -38,10 +38,10 @@ NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
 NODISCARD error delete_file(struct wstr const *const path);
 NODISCARD error write_file(HANDLE const h, void *const p, size_t const bytes, size_t *const written);
 NODISCARD error path_relative_path_to(struct wstr const *const path_from,
-                                             DWORD const attr_from,
-                                             struct wstr const *const path_to,
-                                             DWORD const attr_to,
-                                             struct wstr *const dest);
+                                      DWORD const attr_from,
+                                      struct wstr const *const path_to,
+                                      DWORD const attr_to,
+                                      struct wstr *const dest);
 NODISCARD error get_file_attributes(struct wstr const *const path, DWORD *const attr);
 
 NODISCARD error from_cp(UINT const code_page, struct str const *const src, struct wstr *const dest);

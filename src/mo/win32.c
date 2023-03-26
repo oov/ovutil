@@ -48,3 +48,29 @@ int mo_sprintf(wchar_t *const buf, size_t const buflen, wchar_t const *const ref
   ereport(sfree(&ws));
   return r;
 }
+
+NODISCARD error mo_sprintf_wstr(struct wstr *const dest,
+                                wchar_t const *const reference,
+                                char const *const format,
+                                ...) {
+  if (!dest || !format) {
+    return errg(err_invalid_arugment);
+  }
+  struct wstr ws = {0};
+  error err = from_utf8(&str_unmanaged_const(format), &ws);
+  if (efailed(err)) {
+    err = ethru(err);
+    goto cleanup;
+  }
+  va_list valist;
+  va_start(valist, format);
+  err = svsprintf(dest, reference, ws.ptr, valist);
+  va_end(valist);
+  if (efailed(err)) {
+    err = ethru(err);
+    goto cleanup;
+  }
+cleanup:
+  ereport(sfree(&ws));
+  return err;
+}
