@@ -175,11 +175,17 @@ static struct mo_msg *find(struct mo const *const mp, char const *const id) {
 }
 
 char const *mo_gettext(struct mo const *const mp, char const *const id) {
+  if (!mp) {
+    return id;
+  }
   struct mo_msg *msg = find(mp, id);
   return msg ? msg->str : id;
 }
 
 char const *mo_pgettext(struct mo const *const mp, char const *const ctxt, char const *const id) {
+  if (!mp) {
+    return id;
+  }
   struct str tmp = {0};
   struct mo_msg *msg = NULL;
   error err = scatm(&tmp, ctxt, "\x04", id);
@@ -213,6 +219,9 @@ static char const *find_plural_form(char const *s, size_t len, unsigned long int
 
 char const *
 mo_ngettext(struct mo const *const mp, char const *const id, char const *const id_plural, unsigned long int const n) {
+  if (!mp) {
+    return n != 1 ? id_plural : id;
+  }
   char const *r = NULL;
   struct mo_msg *msg = find(mp, id);
   if (msg) {
