@@ -3,12 +3,11 @@
 
 #include <stdio.h>
 
-static struct mo *open_mo(void) {
+static struct mo *open_mo(uint8_t *mobuf) {
   FILE *f = fopen(SOURCE_DIR "/mo/test/en_US.mo", "rb");
   if (!TEST_CHECK(f != NULL)) {
     return NULL;
   }
-  uint8_t mobuf[4096];
   size_t mosize = fread(mobuf, 1, 4096, f);
   fclose(f);
   if (!TEST_CHECK(mosize > 0)) {
@@ -22,7 +21,8 @@ static struct mo *open_mo(void) {
 }
 
 static void test_mo(void) {
-  struct mo *mp = open_mo();
+  uint8_t mobuf[4096];
+  struct mo *mp = open_mo(mobuf);
   if (!mp) {
     return;
   }
