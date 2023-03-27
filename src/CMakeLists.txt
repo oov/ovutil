@@ -76,11 +76,13 @@ foreach(target ${targets})
     -fdata-sections
     $<$<CONFIG:Debug>:-O0>
     $<$<CONFIG:Release>:-O2>
+    $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
     -flto
   )
   target_link_options(${target} PRIVATE
     -fuse-ld=lld
     -Wl,--gc-sections
+    $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
     # -Wl,--print-gc-sections
   )
   target_link_libraries(${target} PRIVATE
