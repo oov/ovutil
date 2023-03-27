@@ -49,10 +49,10 @@ int mo_sprintf(wchar_t *const buf, size_t const buflen, wchar_t const *const ref
   return r;
 }
 
-NODISCARD error mo_sprintf_wstr(struct wstr *const dest,
-                                wchar_t const *const reference,
-                                char const *const format,
-                                ...) {
+NODISCARD error mo_vsprintf_wstr(struct wstr *const dest,
+                                 wchar_t const *const reference,
+                                 char const *const format,
+                                 va_list valist) {
   if (!dest || !format) {
     return errg(err_invalid_arugment);
   }
@@ -62,15 +62,28 @@ NODISCARD error mo_sprintf_wstr(struct wstr *const dest,
     err = ethru(err);
     goto cleanup;
   }
-  va_list valist;
-  va_start(valist, format);
   err = svsprintf(dest, reference, ws.ptr, valist);
-  va_end(valist);
   if (efailed(err)) {
     err = ethru(err);
     goto cleanup;
   }
 cleanup:
   ereport(sfree(&ws));
+  return err;
+}
+
+NODISCARD error mo_sprintf_wstr(struct wstr *const dest,
+                                wchar_t const *const reference,
+                                char const *const format,
+                                ...) {
+  va_list valist;
+  va_start(valist, format);
+  error err = mo_vsprintf_wstr(dest, reference, format, valist);
+  va_end(valist);
+  if (efailed(err)) {
+    err = ethru(err);
+    goto cleanup;
+  }
+cleanup:
   return err;
 }

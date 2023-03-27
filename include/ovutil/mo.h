@@ -18,4 +18,8 @@ struct mo *mo_get_default(void);
 NODISCARD error mo_parse_from_resource(struct mo **const mpp, uint16_t const lang_id);
 int mo_sprintf(wchar_t *const buf, size_t const buflen, wchar_t const *const reference, char const *const format, ...);
 NODISCARD error mo_sprintf_wstr(struct wstr *const dest, wchar_t const *const reference, char const *const format, ...);
+NODISCARD error mo_vsprintf_wstr(struct wstr *const dest,
+                                 wchar_t const *const reference,
+                                 char const *const format,
+                                 va_list valist);
 #endif
