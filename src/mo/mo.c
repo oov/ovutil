@@ -115,7 +115,7 @@ NODISCARD error mo_parse(struct mo **const mpp, void const *const ptr, size_t co
     size_t const t_len = (size_t)(read(p + trans_offset + i * 8));
     size_t const t_offset = (size_t)(read(p + trans_offset + i * 8 + 4));
     if (o_offset + o_len > ptrlen || t_offset + t_len > ptrlen) {
-      mp->msg_len = i;
+      err = errg(err_fail);
       goto cleanup;
     }
     msg->id = (char const *)p + o_offset;
