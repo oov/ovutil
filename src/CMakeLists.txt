@@ -41,6 +41,8 @@ if(WIN32)
   list(APPEND targets test_ovutil_win32)
 endif()
 
+set(is_clang "$<C_COMPILER_ID:Clang>")
+set(v16_or_later "$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,16>")
 foreach(target ${targets})
   if(target MATCHES "^test_")
     add_test(NAME ${target} COMMAND ${target})
@@ -66,6 +68,7 @@ foreach(target ${targets})
     -pedantic-errors
     -Wno-declaration-after-statement
     -Wno-padded
+    $<$<AND:${is_clang},${v16_or_later}>:-Wno-unsafe-buffer-usage>
     -ffunction-sections
     -fdata-sections
     $<$<CONFIG:Debug>:-O0>
