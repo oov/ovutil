@@ -64,7 +64,7 @@ NODISCARD error ovparallel_create(struct ovparallel **pp, size_t const threads) 
   *p = (struct ovparallel){
       .threads = num_threads,
   };
-  mtx_init(&p->mtx, mtx_plain | mtx_recursive);
+  mtx_init(&p->mtx, mtx_plain);
   cndvar_init(&p->cv);
   cndvar_init(&p->cv2);
   err = mem(&p->thrd, num_threads, sizeof(thrd_t));
