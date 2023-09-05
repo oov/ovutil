@@ -18,6 +18,10 @@ jobs:
           sudo apt install -y cmake ninja-build clang clang-format lld
       - name: Build
         run: |
-          mkdir build
+          mkdir -p build/ovbase build/ovutil
           cd build
-          rm -rf CmakeCache.txt && cmake -GNinja -DOVBASE_PATH=3rd/ovbase -DCMAKE_C_COMPILER=clang -DCMAKE_C_STANDARD=11 -DCMAKE_C_STANDARD_REQUIRED=ON -DCMAKE_C_EXTENSIONS=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cmake --build . && ctest --output-on-failure --output-junit testlog.xml
+          rm -rf ovbase/CmakeCache.txt && cmake -S ../3rd/ovbase -B ovbase --preset default -DFORMAT_SOURCES=OFF -DCMAKE_INSTALL_PREFIX=local
+          cmake --build ovbase && ctest --test-dir ovbase --output-on-failure --output-junit testlog.xml
+          
+          rm -rf ovutil/CmakeCache.txt && cmake -S .. -B ovutil --preset default -DOVBASE_PATH=$(pwd)/ovbase -DFORMAT_SOURCES=OFF -DCMAKE_INSTALL_PREFIX=local
+          cmake --build ovutil && ctest --test-dir ovutil --output-on-failure --output-junit testlog.xml
