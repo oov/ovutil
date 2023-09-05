@@ -1,4 +1,4 @@
-#include "ovutil/win32.h"
+#include <ovutil/win32.h>
 
 NODISCARD error get_window_text(HWND const window, struct wstr *const dest) {
   if (!window) {

@@ -1,6 +1,6 @@
-#include "ovutil/parallel.h"
+#include <ovutil/parallel.h>
 
-#include "ovthreads.h"
+#include <ovthreads.h>
 
 struct ovparallel {
   mtx_t mtx;

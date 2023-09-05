@@ -16,7 +16,7 @@
 #  include <sched.h>
 #endif // _WIN32
 
-#include "ovutil/parallel.h"
+#include <ovutil/parallel.h>
 
 #ifdef _WIN32
 

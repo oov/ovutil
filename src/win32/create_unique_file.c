@@ -1,5 +1,5 @@
-#include "ovnum.h"
-#include "ovutil/win32.h"
+#include <ovnum.h>
+#include <ovutil/win32.h>
 
 NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
                                    wchar_t const *const ext,

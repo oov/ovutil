@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ovbase.h"
+#include <ovbase.h>
 
 // These functions returns the number of logical/physical cores, not the number of active cores.
 // If you have more than 64 cores, you will not get the numbers you expect on Windows.

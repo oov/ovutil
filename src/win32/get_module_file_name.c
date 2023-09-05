@@ -1,4 +1,4 @@
-#include "ovutil/win32.h"
+#include <ovutil/win32.h>
 
 NODISCARD error get_module_file_name(HINSTANCE const hinst, struct wstr *const dest) {
   if (!dest) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ovbase.h"
+#include <ovbase.h>
 
 NODISCARD error include_trailing_path_delimiter(struct NATIVE_STR *const ws);
 NODISCARD error exclude_trailing_path_delimiter(struct NATIVE_STR *const ws);

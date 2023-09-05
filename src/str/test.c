@@ -1,5 +1,5 @@
-#include "ovtest.h"
-#include "ovutil/str.h"
+#include <ovtest.h>
+#include <ovutil/str.h>
 
 #ifdef _WIN32
 #  define NSTR_PH "ls"

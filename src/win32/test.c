@@ -1,5 +1,5 @@
-#include "ovtest.h"
-#include "ovutil/win32.h"
+#include <ovtest.h>
+#include <ovutil/win32.h>
 
 static void test_file_contains(void) {
   static const struct test_data {

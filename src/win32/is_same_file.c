@@ -1,4 +1,4 @@
-#include "ovutil/win32.h"
+#include <ovutil/win32.h>
 
 NODISCARD static error get_file_information(struct wstr const *const path, BY_HANDLE_FILE_INFORMATION *const bhfi) {
   if (!path) {

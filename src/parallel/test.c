@@ -1,5 +1,5 @@
-#include "ovtest.h"
-#include "ovutil/parallel.h"
+#include <ovtest.h>
+#include <ovutil/parallel.h>
 
 static void test_get_number_of_physical_cores(void) {
   size_t n = 0;

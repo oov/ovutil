@@ -1,4 +1,4 @@
-#include "ovutil/win32.h"
+#include <ovutil/win32.h>
 
 NODISCARD error get_file_attributes(struct wstr const *const path, DWORD *const attr) {
   if (!path) {

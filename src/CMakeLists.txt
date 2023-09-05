@@ -1,3 +1,54 @@
+option(USE_ADDRESS_SANITIZER "use address sanitizer" OFF)
+option(USE_COMPILER_RT "use compiler-rt runtime" OFF)
+option(USE_NO_PTHREAD "add -no-pthread" OFF)
+option(USE_LTO "use LTO" ON)
+option(TARGET_EMSCRIPTEN "target emscripten" OFF)
+option(TARGET_WASI_SDK "target wasi-sdk" OFF)
+set(LDNAME "lld" CACHE STRING "ld name")
+
+set(is_clang "$<C_COMPILER_ID:Clang>")
+set(v16_or_later "$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,16>")
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
+add_library(ovutil_intf INTERFACE)
+target_compile_options(ovutil_intf
+INTERFACE
+  -mstackrealign
+  -Wall
+  -Wextra
+  -Werror
+  -Weverything
+  -Wshadow
+  -Werror=return-type
+  -pedantic-errors
+  -Wno-declaration-after-statement
+  -Wno-padded
+  $<$<AND:${is_clang},${v16_or_later}>:-Wno-unsafe-buffer-usage>
+  -ffunction-sections
+  -fdata-sections
+  $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
+  $<$<CONFIG:Debug>:-O0>
+  $<$<CONFIG:Release>:-O2>
+  $<$<BOOL:${USE_LTO}>:-flto>
+)
+target_link_options(ovutil_intf
+INTERFACE
+  $<$<NOT:$<STREQUAL:${LDNAME},>>:-fuse-ld=${LDNAME}>
+  -Wl,--gc-sections
+  # -Wl,--print-gc-sections
+  -static
+  $<$<BOOL:${TARGET_WASI_SDK}>:-Wl,--import-memory,--export-memory,--max-memory=67108864>
+)
+
+set(SOURCE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(DESTINATION_INCLUDE_DIR ${PROJECT_BINARY_DIR}/include)
+configure_file(${SOURCE_INCLUDE_DIR}/ovutil/parallel.h ${DESTINATION_INCLUDE_DIR}/ovutil/parallel.h COPYONLY)
+configure_file(${SOURCE_INCLUDE_DIR}/ovutil/str.h ${DESTINATION_INCLUDE_DIR}/ovutil/str.h COPYONLY)
+configure_file(${SOURCE_INCLUDE_DIR}/ovutil/win32.h ${DESTINATION_INCLUDE_DIR}/ovutil/win32.h COPYONLY)
+
 add_library(ovutil STATIC
   parallel/get_number_of_logical_cores.c
   parallel/get_number_of_physical_cores.c
@@ -28,63 +79,81 @@ add_library(ovutil STATIC
   $<$<BOOL:${WIN32}>:win32/set_client_size.c>
   $<$<BOOL:${WIN32}>:win32/write_file.c>
 )
-list(APPEND targets ovutil)
+set_target_properties(ovutil PROPERTIES
+RUNTIME_OUTPUT_DIRECTORY
+  ${PROJECT_BINARY_DIR}/bin
+ARCHIVE_OUTPUT_DIRECTORY
+  ${PROJECT_BINARY_DIR}/lib
+LIBRARY_OUTPUT_DIRECTORY
+  ${PROJECT_BINARY_DIR}/lib
+)
+set_property(TARGET ovutil PROPERTY PUBLIC_HEADER
+  ${DESTINATION_INCLUDE_DIR}/ovutil/parallel.h
+  ${DESTINATION_INCLUDE_DIR}/ovutil/str.h
+  ${DESTINATION_INCLUDE_DIR}/ovutil/win32.h
+)
+target_include_directories(ovutil
+PUBLIC
+  $<INSTALL_INTERFACE:../include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${OVBASE_PATH}/include>
+)
+target_link_directories(ovutil
+PUBLIC
+  $<BUILD_INTERFACE:${OVBASE_PATH}/lib>
+)
+target_compile_definitions(ovutil
+PRIVATE
+  $<$<BOOL:${WIN32}>:_WIN32_WINNT=0x0501>
+  $<$<CONFIG:Release>:NDEBUG>
+)
+target_compile_options(ovutil
+PUBLIC
+  $<$<AND:$<BOOL:${WIN32}>,$<BOOL:${USE_COMPILER_RT}>>:--rtlib=compiler-rt>
+  $<$<BOOL:${TARGET_EMSCRIPTEN}>:-sUSE_PTHREADS>
+)
+target_link_options(ovutil
+PUBLIC
+  $<$<AND:$<BOOL:${WIN32}>,$<BOOL:${USE_COMPILER_RT}>>:--rtlib=compiler-rt>
+  $<$<AND:$<BOOL:${WIN32}>,$<BOOL:${USE_NO_PTHREAD}>>:-no-pthread>
+  $<$<NOT:$<BOOL:${WIN32}>>:-pthread>
+  $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
+  $<$<BOOL:${TARGET_EMSCRIPTEN}>:-sUSE_PTHREADS -sSTANDALONE_WASM>
+PRIVATE
+  -static
+)
+target_link_libraries(ovutil
+PRIVATE
+  ovbase
+  ovutil_intf
+)
+install(TARGETS ovutil
+        EXPORT libovutil
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        PUBLIC_HEADER DESTINATION include/ovutil)
 
 add_executable(test_ovutil_parallel parallel/test.c)
-list(APPEND targets test_ovutil_parallel)
+list(APPEND tests test_ovutil_parallel)
 
 add_executable(test_ovutil_str str/test.c)
-list(APPEND targets test_ovutil_str)
+list(APPEND tests test_ovutil_str)
 
 if(WIN32)
   add_executable(test_ovutil_win32 win32/test.c)
-  list(APPEND targets test_ovutil_win32)
+  list(APPEND tests test_ovutil_win32)
 endif()
 
-set(is_clang "$<C_COMPILER_ID:Clang>")
-set(v16_or_later "$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,16>")
-foreach(target ${targets})
-  if(target MATCHES "^test_")
-    add_test(NAME ${target} COMMAND ${target})
-    target_compile_definitions(${target} PRIVATE
-      SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-    )
-  endif()
-  target_include_directories(${target} PUBLIC
-    "${PROJECT_SOURCE_DIR}/include"
-  )
-  target_compile_definitions(${target} PRIVATE
-    $<$<BOOL:${WIN32}>:_WIN32_WINNT=0x0501>
-    $<$<CONFIG:Release>:NDEBUG>
-  )
-  target_compile_options(${target} PRIVATE
-    -mstackrealign
-    -Wall
-    -Wextra
-    -Werror
-    -Weverything
-    -Wshadow
-    -Werror=return-type
-    -pedantic-errors
-    -Wno-declaration-after-statement
-    -Wno-padded
-    $<$<AND:${is_clang},${v16_or_later}>:-Wno-unsafe-buffer-usage>
-    -ffunction-sections
-    -fdata-sections
-    $<$<CONFIG:Debug>:-O0>
-    $<$<CONFIG:Release>:-O2>
-    $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
-    -flto
-  )
-  target_link_options(${target} PRIVATE
-    -fuse-ld=lld
-    -Wl,--gc-sections
-    $<$<BOOL:${USE_ADDRESS_SANITIZER}>:-fsanitize=address>
-    # -Wl,--print-gc-sections
+foreach(target ${tests})
+  add_test(NAME ${target} COMMAND ${target})
+  target_compile_definitions(${target}
+  PRIVATE
+    SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
   )
   target_link_libraries(${target} PRIVATE
     ovbase
-    $<$<NOT:$<STREQUAL:${target},ovutil>>:ovutil>
+    ovutil
     $<$<BOOL:${WIN32}>:shlwapi>
+    ovutil_intf
   )
 endforeach(target)
