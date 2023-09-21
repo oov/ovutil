@@ -13,6 +13,14 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+add_library(ovbase IMPORTED STATIC)
+set_target_properties(ovbase PROPERTIES
+IMPORTED_LOCATION
+  ${OVBASE_PATH}/lib/libovbase.a
+INTERFACE_INCLUDE_DIRECTORIES
+  ${OVBASE_PATH}/include
+)
+
 add_library(ovutil_intf INTERFACE)
 target_compile_options(ovutil_intf
 INTERFACE
@@ -96,11 +104,6 @@ target_include_directories(ovutil
 PUBLIC
   $<INSTALL_INTERFACE:../include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${OVBASE_PATH}/include>
-)
-target_link_directories(ovutil
-PUBLIC
-  $<BUILD_INTERFACE:${OVBASE_PATH}/lib>
 )
 target_compile_definitions(ovutil
 PRIVATE
