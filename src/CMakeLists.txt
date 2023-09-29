@@ -13,13 +13,17 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-add_library(ovbase IMPORTED STATIC)
-set_target_properties(ovbase PROPERTIES
-IMPORTED_LOCATION
-  ${OVBASE_PATH}/lib/libovbase.a
-INTERFACE_INCLUDE_DIRECTORIES
-  ${OVBASE_PATH}/include
-)
+# If OVBASE_PATH is passed,
+# ovbase should not be defined externally, so add_library here
+if (NOT ${OVBASE_PATH} STREQUAL "")
+  add_library(ovbase IMPORTED STATIC)
+  set_target_properties(ovbase PROPERTIES
+  IMPORTED_LOCATION
+    ${OVBASE_PATH}/lib/libovbase.a
+  INTERFACE_INCLUDE_DIRECTORIES
+    ${OVBASE_PATH}/include
+  )
+endif()
 
 add_library(ovutil_intf INTERFACE)
 target_compile_options(ovutil_intf
