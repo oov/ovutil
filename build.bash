@@ -38,6 +38,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+mkdir -p build/tools
 cd build
 
 for arch in $ARCHS; do
