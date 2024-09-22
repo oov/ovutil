@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/tools
-          . 3rd/ovbase/setup-llvm-mingw.bash
+          . 3rd/ovbase/setup-llvm-mingw.bash --dir $PWD/build/tools
           cd build
           for arch in i686 x86_64; do
             rm -rf ovbase-$arch/CmakeCache.txt && cmake -S ../3rd/ovbase -B ovbase-$arch --preset debug -DFORMAT_SOURCES=OFF -DCMAKE_INSTALL_PREFIX=local -DCMAKE_TOOLCHAIN_FILE=cmake/llvm-mingw.cmake -DCMAKE_C_COMPILER=$arch-w64-mingw32-clang
