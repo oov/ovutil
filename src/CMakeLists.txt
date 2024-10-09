@@ -15,16 +15,17 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-# If OVBASE_PATH is passed,
-# ovbase should not be defined externally, so add_library here
-if (NOT ${OVBASE_PATH} STREQUAL "")
-  add_library(ovbase IMPORTED STATIC)
-  set_target_properties(ovbase PROPERTIES
-  IMPORTED_LOCATION
-    ${OVBASE_PATH}/lib/libovbase.a
-  INTERFACE_INCLUDE_DIRECTORIES
-    ${OVBASE_PATH}/include
-  )
+include(FetchContent)
+if (NOT TARGET ovbase) # if ovbase is not added in the parent project
+  find_package(ovbase QUIET)
+  if (NOT ovbase_FOUND) # If ovbase is not installed
+    FetchContent_Declare(
+      ovbase
+      GIT_REPOSITORY https://github.com/oov/ovbase
+      GIT_TAG        0e94ae833d2b1787b726e90d7d81fa5001d10b97
+    )
+    FetchContent_MakeAvailable(ovbase)
+  endif()
 endif()
 
 add_library(ovutil_intf INTERFACE)
@@ -110,7 +111,7 @@ set_property(TARGET ovutil PROPERTY PUBLIC_HEADER
 )
 target_include_directories(ovutil
 PUBLIC
-  $<INSTALL_INTERFACE:../include>
+  $<INSTALL_INTERFACE:include>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 target_compile_definitions(ovutil
@@ -138,11 +139,17 @@ PRIVATE
   ovbase
   ovutil_intf
 )
-install(TARGETS ovutil
-        EXPORT libovutil
+install(TARGETS ovutil ovutil_intf
+        EXPORT ovutil-export
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         PUBLIC_HEADER DESTINATION include/ovutil)
+install(EXPORT ovutil-export
+        FILE ovutil-config.cmake
+        DESTINATION share/cmake/ovutil/
+        EXPORT_LINK_INTERFACE_LIBRARIES)
+export(EXPORT ovutil-export
+       FILE "${CMAKE_BINARY_DIR}/ovutil-config.cmake")
 
 add_executable(test_ovutil_parallel parallel/test.c)
 list(APPEND tests test_ovutil_parallel)

@@ -36,10 +36,4 @@ jobs:
       - name: Build
         shell: msys2 {0}
         run: |
-          mkdir -p build/ovbase build/ovutil
-          cd build
-          rm -rf ovbase/CmakeCache.txt && cmake -S ../3rd/ovbase -B ovbase --preset debug -DFORMAT_SOURCES=OFF -DCMAKE_INSTALL_PREFIX=local -DCMAKE_C_COMPILER=clang
-          cmake --build ovbase && ctest --test-dir ovbase --output-on-failure --output-junit testlog.xml
-          
-          rm -rf ovutil/CmakeCache.txt && cmake -S .. -B ovutil --preset debug -DOVBASE_PATH=$(pwd)/ovbase -DFORMAT_SOURCES=ON -DCMAKE_INSTALL_PREFIX=local -DCMAKE_C_COMPILER=clang
-          cmake --build ovutil && ctest --test-dir ovutil --output-on-failure --output-junit testlog.xml
+          bash -x build.bash --no-install-tools --no-format --debug

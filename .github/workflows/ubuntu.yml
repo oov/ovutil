@@ -15,4 +15,4 @@ jobs:
           submodules: recursive
       - name: Build
         run: |
-          sudo docker run --net host -i -v .:/root/ovutil -w /root/ovutil ubuntu:22.04 /bin/bash -c 'apt update && apt install -y cmake ninja-build clang clang-format lld && bash -x build.bash --arch x86_64 --debug'
+          sudo docker run --net host -i -v .:/root/ovutil -w /root/ovutil ubuntu:22.04 /bin/bash -c 'apt update && apt install -y git cmake ninja-build clang clang-format lld && bash -x build.bash --no-install-tools --no-format --debug'
