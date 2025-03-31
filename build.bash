@@ -43,10 +43,10 @@ done
 
 if [ "${INSTALL_TOOLS}" -eq 1 ]; then
   mkdir -p "build/tools"
-  if [ ! -e "${PWD}/build/tools/setup-llvm-mingw.bash" ]; then
-    curl -o "${PWD}/build/tools/setup-llvm-mingw.bash" -sOL https://raw.githubusercontent.com/oov/ovbase/751f7da20311b3e1ebc49839d121ca0dd05e9952/setup-llvm-mingw.bash
+  if [ ! -e "${PWD}/build/tools/setup-llvm-mingw.sh" ]; then
+    curl -o "${PWD}/build/tools/setup-llvm-mingw.sh" -sOL https://raw.githubusercontent.com/oov/ovbase/caace762bea6a59bfe4f9fc51a703099e3f65e9e/setup-llvm-mingw.sh
   fi
-  . "${PWD}/build/tools/setup-llvm-mingw.bash" --dir "${PWD}/build/tools"
+  . "${PWD}/build/tools/setup-llvm-mingw.sh" --dir "${PWD}/build/tools"
 fi
 
 ARCHDIR=${ARCHDIR:-`uname -m`}
