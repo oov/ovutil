@@ -23,7 +23,7 @@ enum {
 };
 
 static void task(void *userdata, size_t const index, size_t const total) {
-  size_t *found = userdata;
+  size_t *found = (size_t *)userdata;
   TEST_CHECK(total == task_n);
   TEST_CHECK(index < task_n);
   ++found[index];
@@ -31,10 +31,10 @@ static void task(void *userdata, size_t const index, size_t const total) {
 
 static void test_ovparallel(void) {
   struct ovparallel *para = NULL;
+  size_t found[task_n] = {0};
   if (!TEST_SUCCEEDED_F(ovparallel_create(&para, threads))) {
     goto cleanup;
   }
-  size_t found[task_n] = {0};
   ovparallel_for(para, task, found, task_n);
   for (int i = 0; i < task_n; ++i) {
     TEST_CHECK(found[i] == 1);

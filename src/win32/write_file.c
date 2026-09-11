@@ -5,7 +5,7 @@ NODISCARD error write_file(HANDLE const h, void *const p, size_t const bytes, si
     return errg(err_invalid_arugment);
   }
   size_t written_total = 0;
-  char *ptr = p;
+  char *ptr = (char *)p;
   DWORD sz = 0, ret = 0;
   error err = eok();
   while (written_total < bytes) {

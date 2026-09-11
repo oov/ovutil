@@ -16,7 +16,7 @@ struct ovparallel {
 };
 
 static int worker(void *userdata) {
-  struct ovparallel *const p = userdata;
+  struct ovparallel *const p = (struct ovparallel *)userdata;
   for (;;) {
     cndvar_lock(&p->cv);
     cndvar_wait_while(&p->cv, 0);

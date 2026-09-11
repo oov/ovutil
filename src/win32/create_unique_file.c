@@ -15,16 +15,18 @@ NODISCARD error create_unique_file(wchar_t const *const base_fullpath,
   }
 
   struct wstr tmp = {0};
+  size_t base_fullpath_len = 0;
+  uint32_t hash = 0;
+  wchar_t numbuf[32] = {0};
+  wchar_t *numstr = numbuf;
   error err = scpy(&tmp, base_fullpath);
   if (efailed(err)) {
     err = ethru(err);
     goto cleanup;
   }
 
-  size_t const base_fullpath_len = tmp.len;
-  uint32_t hash = ov_splitmix32_next(GetTickCount() + GetCurrentProcessId() + GetCurrentThreadId());
-  wchar_t numbuf[32] = {0};
-  wchar_t *numstr = numbuf;
+  base_fullpath_len = tmp.len;
+  hash = ov_splitmix32_next(GetTickCount() + GetCurrentProcessId() + GetCurrentThreadId());
   for (int i = 0; i < 9; ++i) {
     err = scatm(&tmp, numstr, ext);
     if (efailed(err)) {

@@ -10,7 +10,7 @@ struct disable_family_windows_data {
 };
 
 static WINBOOL CALLBACK disable_family_windows_callback(HWND const window, LPARAM const lparam) {
-  struct disable_family_windows_data *const d = (void *)lparam;
+  struct disable_family_windows_data *const d = (struct disable_family_windows_data *)(void *)lparam;
   if (!IsWindowVisible(window) || !IsWindowEnabled(window) || d->exclude == window) {
     return TRUE;
   }
@@ -38,18 +38,19 @@ NODISCARD error disable_family_windows(HWND const exclude, HWND **const disabled
       .pid = GetCurrentProcessId(),
       .exclude = exclude,
   };
+  HWND const *h = NULL;
   if (!EnumWindows(disable_family_windows_callback, (LPARAM)&d)) {
     err = errhr(HRESULT_FROM_WIN32(GetLastError()));
     goto failed;
   }
-  err = apush(&d, INVALID_HANDLE_VALUE);
+  err = apush(&d, (HWND)INVALID_HANDLE_VALUE);
   if (efailed(err)) {
     efree(&err);
     err = errhr(HRESULT_FROM_WIN32(ERROR_NOT_ENOUGH_MEMORY));
     goto failed;
   }
 
-  HWND const *h = d.ptr;
+  h = d.ptr;
   while (*h != INVALID_HANDLE_VALUE) {
     EnableWindow(*h++, FALSE);
   }

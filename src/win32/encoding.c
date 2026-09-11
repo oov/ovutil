@@ -9,6 +9,7 @@ NODISCARD error from_cp(UINT const code_page, struct str const *const src, struc
   }
 
   struct wstr tmp = {0};
+  int dlen = 0;
   error err = eok();
 
   if (src->len == 0) {
@@ -20,7 +21,7 @@ NODISCARD error from_cp(UINT const code_page, struct str const *const src, struc
     return eok();
   }
 
-  int const dlen = MultiByteToWideChar(code_page, 0, src->ptr, (int)src->len, NULL, 0);
+  dlen = MultiByteToWideChar(code_page, 0, src->ptr, (int)src->len, NULL, 0);
   if (!dlen) {
     err = errhr(HRESULT_FROM_WIN32(GetLastError()));
     goto cleanup;
@@ -60,6 +61,7 @@ NODISCARD error to_cp(UINT const code_page, struct wstr const *const src, struct
   }
 
   struct str tmp = {0};
+  int dlen = 0;
   error err = eok();
 
   if (src->len == 0) {
@@ -71,7 +73,7 @@ NODISCARD error to_cp(UINT const code_page, struct wstr const *const src, struct
     return eok();
   }
 
-  int const dlen = WideCharToMultiByte(code_page, 0, src->ptr, (int)src->len, NULL, 0, NULL, NULL);
+  dlen = WideCharToMultiByte(code_page, 0, src->ptr, (int)src->len, NULL, 0, NULL, NULL);
   if (!dlen) {
     err = errhr(HRESULT_FROM_WIN32(GetLastError()));
     goto cleanup;

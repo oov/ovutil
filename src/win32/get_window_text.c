@@ -10,6 +10,7 @@ NODISCARD error get_window_text(HWND const window, struct wstr *const dest) {
 
   struct wstr tmp = {0};
   error err = eok();
+  int written = 0;
   SetLastError(0);
   int slen = GetWindowTextLengthW(window);
   if (slen == 0) {
@@ -25,7 +26,7 @@ NODISCARD error get_window_text(HWND const window, struct wstr *const dest) {
     goto cleanup;
   }
 
-  int const written = GetWindowTextW(window, tmp.ptr, slen + 1);
+  written = GetWindowTextW(window, tmp.ptr, slen + 1);
   if (written == 0) {
     HRESULT hr = HRESULT_FROM_WIN32(GetLastError());
     if (FAILED(hr)) {

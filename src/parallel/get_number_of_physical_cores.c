@@ -15,6 +15,8 @@ NODISCARD error get_number_of_physical_cores(size_t *const n) {
   error err = eok();
   PSYSTEM_LOGICAL_PROCESSOR_INFORMATION p = NULL;
   DWORD len = 0;
+  size_t cores = 0;
+  DWORD end = 0;
   for (;;) {
     if (GetLogicalProcessorInformation(p, &len)) {
       break;
@@ -33,8 +35,7 @@ NODISCARD error get_number_of_physical_cores(size_t *const n) {
       goto cleanup;
     }
   }
-  size_t cores = 0;
-  DWORD end = sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+  end = sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
   for (size_t i = 0; end <= len; ++i, end += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION)) {
     if (p[i].Relationship == RelationProcessorCore) {
       ++cores;
